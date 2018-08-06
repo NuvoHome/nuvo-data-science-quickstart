@@ -26,6 +26,7 @@ services:
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
       KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://broker:9092,PLAINTEXT_HOST://localhost:29092
       KAFKA_METRIC_REPORTERS: io.confluent.metrics.reporter.ConfluentMetricsReporter
+      KAFKA_ADVERTISED_HOST_NAME: ${DOCKER_KAFKA_HOST}
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
       KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
       CONFLUENT_METRICS_REPORTER_BOOTSTRAP_SERVERS: broker:9092
@@ -182,10 +183,60 @@ services:
       KAFKA_REST_SCHEMA_REGISTRY_URL: 'http://schema-registry:8081'
 
   cloudera:
-    image: caioquirino/docker-cloudera-quickstart
+      image: cloudera/quickstart
+      container_name: cloudera
+      privileged: true
+      tty: true
+      command: /usr/bin/docker-quickstart
+      ports:
+        - 80:80
+        - 7180:7180
+        - 8020:8020
+        - 8888:8888
+        - 50070:50070
+        - 50010:50010
+        - 50020:50020
+        - 50075:50075
+        - 50475:50475
+        - 50090:50090
+        - 50495:50495
+      volumes: 
+        - ./:/home/cloudera
+      working_dir: /home/cloudera
 
-  cassandra:
-    image: cassandra
+  # elastickibana:
+  #   image: nshou/elasticsearch-kibana
+  #   ports:
+  #     - 9200:9200
+  #     - 5601:5601
+
+  nifi:
+    image: apache/nifi
+    container_name: nifi
+    ports:
+      - 8080:8080
+    volumes:
+      - ./config:/config
+
+  # elasticsearch:
+  #   image: docker.elastic.co/elasticsearch/elasticsearch:6.3.2
+  #   container_name: elasticsearch
+  #   environment:
+  #     - bootstrap.memory_lock=true
+  #     - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+  #   ulimits:
+  #     memlock:
+  #       soft: -1
+  #       hard: -1
+  #   volumes:
+  #     - ./data:/usr/share/elasticsearch/data
+  #   ports:
+  #     - 9200:9200
+  
+  # kibana:
+  #   image: docker.elastic.co/kibana/kibana:6.3.2
+  #   ports:
+  #     - 5601:5601
 
 volumes:
     mi2: {}
