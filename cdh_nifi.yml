@@ -1,0 +1,35 @@
+---
+version: '2'
+services:
+  cloudera:
+      image: cloudera/quickstart
+      container_name: cloudera
+      privileged: true
+      tty: true
+      command: /usr/bin/docker-quickstart
+      ports:
+        - 80:80
+        - 7180:7180
+        - 8020:8020
+        - 8888:8888
+        - 50070:50070
+        - 50010:50010
+        - 50020:50020
+        - 50075:50075
+        - 50475:50475
+        - 50090:50090
+        - 50495:50495
+      volumes: 
+        - ./:/home/cloudera
+      working_dir: /home/cloudera
+
+  nifi:
+    image: apache/nifi
+    container_name: nifi
+    ports:
+      - 8080:8080
+    volumes:
+      - ./config:/config
+
+volumes:
+    mi2: {}
